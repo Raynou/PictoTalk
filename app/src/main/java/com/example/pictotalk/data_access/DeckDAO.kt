@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import com.example.pictotalk.data_access.BdOpenHelper.Companion.TABLE_CARD_DECK
 import com.example.pictotalk.data_access.BdOpenHelper.Companion.TABLE_DECK
 import com.example.pictotalk.entities.Deck
 
@@ -28,8 +29,8 @@ class DeckDAO(context: Context) {
             val id = cursor.getInt(idIndex)
             val name = cursor.getString(nameIndex)
             val description = cursor.getString(descriptionIndex)
-            val image = cursor.getString(imageIndex)
-            Deck(id, name, description, image, mutableListOf())
+            val image = cursor.getInt(imageIndex)
+            Deck(id, name, description, image)
         } else {
             null
         }
@@ -80,7 +81,9 @@ class DeckDAO(context: Context) {
     // Function that retrieves all the decks by a card id
     fun getDecksByCardId(cardId: Int): List<Deck> {
         val decks = mutableListOf<Deck>()
-        val query = "SELECT * FROM $TABLE_DECK WHERE id IN (SELECT deck_id FROM card_deck WHERE card_id = ?)"
+        val query = "SELECT td.id, td.name, td.description, td.image FROM $TABLE_DECK td " +
+                    "JOIN $TABLE_CARD_DECK tcd ON td.id = tcd.deck_id " +
+                    "WHERE tcd.card_id = ?"
         val cursor = sqliteDatabase.rawQuery(query, arrayOf(cardId.toString()))
         with(cursor) {
             while (moveToNext()) {

@@ -26,7 +26,7 @@ class CardDAO (context: Context){
         return if (idIndex != -1 && phraseIndex != -1 && imageIndex != -1) {
             val id = cursor.getInt(idIndex)
             val phrase = cursor.getString(phraseIndex)
-            val image = cursor.getString(imageIndex)
+            val image = cursor.getInt(imageIndex)
             Card(id, phrase, image)
         } else {
             null
@@ -80,7 +80,7 @@ class CardDAO (context: Context){
     }
 
     // Function that retrieves all the cards from the database by a deck
-    fun getCardsByDeck(deckId: Int): List<Card> {
+    fun getCardsByDeckId(deckId: Int): List<Card> {
         val cards = mutableListOf<Card>()
         val cursor = sqliteDatabase.rawQuery(
             "SELECT c.id, c.phrase, c.image FROM card c " +

@@ -3,6 +3,7 @@ package com.example.pictotalk.data_access
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.pictotalk.R
 
 /**
  * Class that represents the structure of the database
@@ -61,6 +62,8 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
                     "FOREIGN KEY(card_id) REFERENCES $TABLE_CARD(id)," +
                     "FOREIGN KEY(deck_id) REFERENCES $TABLE_DECK(id))"
         )
+        val image = R.drawable.cards
+        db.execSQL("INSERT INTO $TABLE_DECK (name, description, image) VALUES ('Animals', 'Deck with animals', $image)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
