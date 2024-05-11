@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.example.pictotalk.data_access.BdOpenHelper.Companion.TABLE_CARD
 import com.example.pictotalk.entities.Card
+import com.example.pictotalk.game.Difficulty
 
 /**
  * Data Access Object for the Card entity
@@ -22,12 +23,14 @@ class CardDAO (context: Context){
         val idIndex = cursor.getColumnIndex("id")
         val phraseIndex = cursor.getColumnIndex("phrase")
         val imageIndex = cursor.getColumnIndex("image")
+        val difficultyIndex = cursor.getColumnIndex("difficulty")
 
         return if (idIndex != -1 && phraseIndex != -1 && imageIndex != -1) {
             val id = cursor.getInt(idIndex)
             val phrase = cursor.getString(phraseIndex)
             val image = cursor.getInt(imageIndex)
-            Card(id, phrase, image)
+            val difficulty = Difficulty.valueOf(cursor.getString(difficultyIndex))
+            Card(id, phrase, image, difficulty)
         } else {
             null
         }

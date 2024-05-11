@@ -46,7 +46,8 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "name TEXT," +
                     "description TEXT," +
-                    "image TEXT)"
+                    "image TEXT," +
+                    "difficulty TEXT)"
         )
         db.execSQL(
             "CREATE TABLE $TABLE_CARD (" +
@@ -64,40 +65,45 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
         )
         val image = R.drawable.cards
         db.execSQL("INSERT INTO $TABLE_DECK (name, description, image) VALUES ('Cotidianidad', 'Mazo con pictogramas relacionados con el día a día', $image)")
-        // Insertar 25 cartas en la tabla card
+        // Insertar 30 cartas en la tabla card
         val cards = listOf(
-            Pair("Pedir", R.drawable.cards),
-            Pair("Vaso de agua", R.drawable.cards),
-            Pair("Ojos", R.drawable.cards),
-            Pair("Orejas", R.drawable.cards),
-            Pair("Boca", R.drawable.cards),
-            Pair("Cachetes", R.drawable.cards),
-            Pair("Brazos", R.drawable.cards),
-            Pair("Piernas", R.drawable.cards),
-            Pair("Baño", R.drawable.cards),
-            Pair("Balón", R.drawable.cards),
-            Pair("Piernas", R.drawable.cards),
-            Pair("Dormirse", R.drawable.cards),
-            Pair("Levantarse", R.drawable.cards),
-            Pair("Jugar", R.drawable.cards),
-            Pair("Cocinar", R.drawable.cards),
-            Pair("Estudiar", R.drawable.cards),
-            Pair("Encender la luz", R.drawable.cards),
-            Pair("Ir a la escuela", R.drawable.cards),
-            Pair("Sentarse", R.drawable.cards),
-            Pair("Lavarse los dientes", R.drawable.cards),
-            Pair("Bañarse", R.drawable.cards),
-            Pair("Secarse", R.drawable.cards),
-            Pair("Sonarse la nariz", R.drawable.cards),
-            Pair("Usar la computadora", R.drawable.cards),
-            Pair("Usar el celular", R.drawable.cards)
+            Triple("Pedir", R.drawable.cards, "EASY"),
+            Triple("Vaso de agua", R.drawable.cards, "EASY"),
+            Triple("Ojos", R.drawable.cards, "MEDIUM"),
+            Triple("Orejas", R.drawable.cards, "MEDIUM"),
+            Triple("Boca", R.drawable.cards, "HARD"),
+            Triple("Cachetes", R.drawable.cards, "HARD"),
+            Triple("Brazos", R.drawable.cards, "EASY"),
+            Triple("Piernas", R.drawable.cards, "EASY"),
+            Triple("Baño", R.drawable.cards, "MEDIUM"),
+            Triple("Balón", R.drawable.cards, "MEDIUM"),
+            Triple("Piernas", R.drawable.cards, "HARD"),
+            Triple("Dormirse", R.drawable.cards, "HARD"),
+            Triple("Levantarse", R.drawable.cards, "EASY"),
+            Triple("Jugar", R.drawable.cards, "EASY"),
+            Triple("Cocinar", R.drawable.cards, "MEDIUM"),
+            Triple("Estudiar", R.drawable.cards, "MEDIUM"),
+            Triple("Encender la luz", R.drawable.cards, "HARD"),
+            Triple("Ir a la escuela", R.drawable.cards, "HARD"),
+            Triple("Sentarse", R.drawable.cards, "EASY"),
+            Triple("Lavarse los dientes", R.drawable.cards, "EASY"),
+            Triple("Bañarse", R.drawable.cards, "MEDIUM"),
+            Triple("Secarse", R.drawable.cards, "MEDIUM"),
+            Triple("Sonarse la nariz", R.drawable.cards, "HARD"),
+            Triple("Usar la computadora", R.drawable.cards, "HARD"),
+            Triple("Usar el celular", R.drawable.cards, "EASY"),
+            Triple("Comer", R.drawable.cards, "EASY"),
+            Triple("Correr", R.drawable.cards, "MEDIUM"),
+            Triple("Saltar", R.drawable.cards, "HARD"),
+            Triple("Leer", R.drawable.cards, "EASY"),
+            Triple("Escribir", R.drawable.cards, "MEDIUM")
         )
         cards.forEach {
-            db.execSQL("INSERT INTO $TABLE_CARD (phrase, image) VALUES ('${it.first}', ${it.second})")
+            db.execSQL("INSERT INTO $TABLE_CARD (phrase, image) VALUES ('${it.first}', ${it.second}, ${it.third})")
         }
 
-        // Asociar 10 cartas al mazo con id 1
-        val cardsIds = (1..10).toList()
+        // Asociar todas las cartas al mazo con id 1
+        val cardsIds = (1..30).toList()
         cardsIds.forEach {
             db.execSQL("INSERT INTO $TABLE_CARD_DECK (card_id, deck_id) VALUES ($it, 1)")
         }

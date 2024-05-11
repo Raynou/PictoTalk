@@ -14,48 +14,47 @@ class GameManagerTest {
 
     @Test
     fun testEvaluateAnswerInEasyGameAndCorrectAnswer() {
-        val gameManager = GameManager(easyGame)
+        val cards = listOf(Card(1, "Hola", 1, easyGame))
+        val gameManager = GameManager(easyGame, cards)
 
-        val card = Card(1, "Hola", 1)
         val answer = "Ho"
 
-        gameManager.evaluateAnswer(card, answer)
+        gameManager.evaluateAnswer(answer)
 
         assertEquals(1, gameManager.score)
     }
 
-    @Test
-    fun testEvaluateAnswerInEasyGameAndIncorrectAnswer() {
-        val gameManager = GameManager(easyGame)
+    @Test fun testEvaluateAnswerInEasyGameAndIncorrectAnswer() {
+        val cards = listOf(Card(1, "Hola", 1, easyGame))
+        val gameManager = GameManager(easyGame, cards)
 
-        val card = Card(1, "Hola", 1)
         val answer = "ob"
 
-        gameManager.evaluateAnswer(card, answer)
+        gameManager.evaluateAnswer(answer)
 
         assertEquals(0, gameManager.score)
     }
 
     @Test
     fun testEvaluateAnswerInMediumGameAndCorrectAnswer() {
-        val gameManager = GameManager(mediumGame)
+        val cards = listOf(Card(1, "Hola mundo", 1, mediumGame))
+        val gameManager = GameManager(mediumGame, cards)
 
-        val card = Card(1, "Hola mundo", 1)
         val answer = "oda mudo"
 
-        gameManager.evaluateAnswer(card, answer)
+        gameManager.evaluateAnswer(answer)
 
         assertEquals(1, gameManager.score)
     }
 
     @Test
     fun testEvaluateAnswerInMediumGameAndIncorrectAnswer() {
-        val gameManager = GameManager(mediumGame)
+        val cards = listOf(Card(1, "Hola mundo", 1, mediumGame))
+        val gameManager = GameManager(mediumGame, cards)
 
-        val card = Card(1, "Hola mundo", 1)
         val answer = "oda"
 
-        gameManager.evaluateAnswer(card, answer)
+        gameManager.evaluateAnswer(answer)
 
         assertEquals(0, gameManager.score)
     }
@@ -63,23 +62,23 @@ class GameManagerTest {
 
     @Test
     fun testEvaluateAnswerInHardGameAndCorrectAnswer() {
-        val gameManager = GameManager(hardGame)
+        val cards = listOf(Card(1, "Hola", 1, hardGame))
+        val gameManager = GameManager(hardGame, cards)
 
-        val card = Card(1, "Hola", 1)
         val answer = "hola"
 
-        gameManager.evaluateAnswer(card, answer)
+        gameManager.evaluateAnswer(answer)
 
         assertEquals(1, gameManager.score)
     }
     @Test
     fun testEvaluateAnswerInHardGameAndIncorrectAnswer() {
-        val gameManager = GameManager(hardGame)
+        val cards = listOf(Card(1, "Hola", 1, hardGame))
+        val gameManager = GameManager(hardGame, cards)
 
-        val card = Card(1, "Hola", 1)
         val answer = "ola"
 
-        gameManager.evaluateAnswer(card, answer)
+        gameManager.evaluateAnswer(answer)
 
         assertEquals(0, gameManager.score)
     }
