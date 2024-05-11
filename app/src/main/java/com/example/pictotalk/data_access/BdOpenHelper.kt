@@ -63,10 +63,48 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
                     "FOREIGN KEY(deck_id) REFERENCES $TABLE_DECK(id))"
         )
         val image = R.drawable.cards
-        db.execSQL("INSERT INTO $TABLE_DECK (name, description, image) VALUES ('Animals', 'Deck with animals', $image)")
+        db.execSQL("INSERT INTO $TABLE_DECK (name, description, image) VALUES ('Cotidianidad', 'Mazo con pictogramas relacionados con el día a día', $image)")
+        // Insertar 25 cartas en la tabla card
+        val cards = listOf(
+            Pair("Pedir", R.drawable.cards),
+            Pair("Vaso de agua", R.drawable.cards),
+            Pair("Ojos", R.drawable.cards),
+            Pair("Orejas", R.drawable.cards),
+            Pair("Boca", R.drawable.cards),
+            Pair("Cachetes", R.drawable.cards),
+            Pair("Brazos", R.drawable.cards),
+            Pair("Piernas", R.drawable.cards),
+            Pair("Baño", R.drawable.cards),
+            Pair("Balón", R.drawable.cards),
+            Pair("Piernas", R.drawable.cards),
+            Pair("Dormirse", R.drawable.cards),
+            Pair("Levantarse", R.drawable.cards),
+            Pair("Jugar", R.drawable.cards),
+            Pair("Cocinar", R.drawable.cards),
+            Pair("Estudiar", R.drawable.cards),
+            Pair("Encender la luz", R.drawable.cards),
+            Pair("Ir a la escuela", R.drawable.cards),
+            Pair("Sentarse", R.drawable.cards),
+            Pair("Lavarse los dientes", R.drawable.cards),
+            Pair("Bañarse", R.drawable.cards),
+            Pair("Secarse", R.drawable.cards),
+            Pair("Sonarse la nariz", R.drawable.cards),
+            Pair("Usar la computadora", R.drawable.cards),
+            Pair("Usar el celular", R.drawable.cards)
+        )
+        cards.forEach {
+            db.execSQL("INSERT INTO $TABLE_CARD (phrase, image) VALUES ('${it.first}', ${it.second})")
+        }
+
+        // Asociar 10 cartas al mazo con id 1
+        val cardsIds = (1..10).toList()
+        cardsIds.forEach {
+            db.execSQL("INSERT INTO $TABLE_CARD_DECK (card_id, deck_id) VALUES ($it, 1)")
+        }
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_CARD_DECK")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_CARD")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_DECK")
         onCreate(db)

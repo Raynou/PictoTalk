@@ -5,6 +5,21 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="testEvaluateAnswerInEasyGameAndIncorrectAnswer()">
+        <State />
+      </entry>
+      <entry key="testEvaluateAnswerInHardGameAndCorrectAnswer()">
+        <State />
+      </entry>
+      <entry key="testEvaluateAnswerInHardGameAndIncorrectAnswer()">
+        <State />
+      </entry>
+      <entry key="testEvaluateAnswerInMediumGameAndCorrectAnswer()">
+        <State />
+      </entry>
+      <entry key="testEvaluateAnswerInMediumGameAndIncorrectAnswer()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

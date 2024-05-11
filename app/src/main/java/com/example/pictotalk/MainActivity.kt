@@ -185,6 +185,7 @@ fun DeckList(paddingValues: PaddingValues) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeckCard(deck: Deck) {
     Card(
@@ -196,7 +197,10 @@ fun DeckCard(deck: Deck) {
         //border = BorderStroke(3.dp,Color.Gray)
         colors = CardDefaults.cardColors(
             containerColor = Color.White
-        )
+        ),
+        onClick = {
+            println(deck.id)
+        }
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
