@@ -1,5 +1,8 @@
 package com.example.pictotalk.game
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import com.example.pictotalk.entities.Pictogram
 
 /***
@@ -11,20 +14,36 @@ import com.example.pictotalk.entities.Pictogram
  * @constructor
  * @param context
  */
-class GameManager (var difficulty: Difficulty, pictograms: List<Pictogram>, var score: Int = 0) {
-
+class GameManager (
+    var difficulty: Difficulty,
+    pictograms: List<Pictogram>,
+    var score: Int = 0,
+) {
     private val activePictograms: List<Pictogram> = pictograms.filter { it.difficulty == difficulty }.shuffled()
     private var currentCardIndex = 0
+    private var currentCard: MutableState<Pictogram> = mutableStateOf(activePictograms[currentCardIndex])
+    private var progress: MutableState<Float> = mutableStateOf(0.0f)
+    fun getCurrentCard(): State<Pictogram> {
+        return this.currentCard
+    }
 
     fun getTotalcards(): Int {
         return activePictograms.size
     }
 
-    // Get the current card and increase the index
-    fun getCurrentCard(): Pictogram {
-        val card = activePictograms[currentCardIndex]
+    fun getProgress(): State<Float> {
+        return this.progress
+    }
+
+    private fun updateProgress() {
+        progress.value = (currentCardIndex.toFloat() + 1) / activePictograms.size.toFloat()
+    }
+
+    // Function to update the state of the game
+    fun nextCard() {
         currentCardIndex++
-        return card
+        currentCard.value = activePictograms[currentCardIndex]
+        updateProgress()
     }
 
     fun evaluateAnswer(answer: String) {

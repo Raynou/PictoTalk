@@ -25,13 +25,13 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import com.example.pictotalk.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 @Composable
 fun GameScreen() {
     val context = LocalContext.current
@@ -41,6 +41,10 @@ fun GameScreen() {
     val settingsManager = SettingsManager(context)
     val difficulty = settingsManager.getDifficulty()
     val gameManager = GameManager(difficulty, cards)
+
+    // Status variables
+    val progressStatus by gameManager.getProgress()
+    val currentCard by gameManager.getCurrentCard()
 
     Scaffold { innerPadding ->
         Column (
@@ -57,14 +61,14 @@ fun GameScreen() {
 
                 // Simulate game progress
                 LinearProgressIndicator(
-                    progress = 0.5f,
+                    progress = progressStatus,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 )
             }
 
-            Text("Lorem Ipsum", fontSize = 24.sp)
+            Text(currentCard.phrase, fontSize = 24.sp)
 
             Column (
                 modifier = Modifier.padding(32.dp),
@@ -88,7 +92,9 @@ fun GameScreen() {
             }
 
             FloatingActionButton(
-                onClick = { println("Si") },
+                onClick = {
+                    gameManager.nextCard()
+                },
                 modifier = Modifier
                             .size(72.dp)
             ) {
