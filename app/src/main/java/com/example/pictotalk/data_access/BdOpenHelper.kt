@@ -46,15 +46,15 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "name TEXT," +
                     "description TEXT," +
-                    "image TEXT," +
-                    "difficulty TEXT)"
+                    "image TEXT)"
+
         )
         db.execSQL(
             "CREATE TABLE $TABLE_CARD (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "phrase TEXT," +
-                    "image TEXT" +
-                    ")"
+                    "image TEXT," +
+                    "difficulty TEXT)"
         )
         db.execSQL(
             "CREATE TABLE $TABLE_CARD_DECK (" +
@@ -99,7 +99,7 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
             Triple("Escribir", R.drawable.cards, "MEDIUM")
         )
         cards.forEach {
-            db.execSQL("INSERT INTO $TABLE_CARD (phrase, image) VALUES ('${it.first}', ${it.second}, ${it.third})")
+            db.execSQL("INSERT INTO $TABLE_CARD (phrase, image, difficulty) VALUES ('${it.first}', ${it.second}, '${it.third}')")
         }
 
         // Asociar todas las cartas al mazo con id 1

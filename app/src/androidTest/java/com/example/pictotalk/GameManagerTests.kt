@@ -1,6 +1,6 @@
 package com.example.pictotalk
 
-import com.example.pictotalk.entities.Card
+import com.example.pictotalk.entities.Pictogram
 import com.example.pictotalk.game.Difficulty
 import com.example.pictotalk.game.GameManager
 import org.junit.Assert.*
@@ -14,8 +14,8 @@ class GameManagerTest {
 
     @Test
     fun testEvaluateAnswerInEasyGameAndCorrectAnswer() {
-        val cards = listOf(Card(1, "Hola", 1, easyGame))
-        val gameManager = GameManager(easyGame, cards)
+        val pictograms = listOf(Pictogram(1, "Hola", 1, easyGame))
+        val gameManager = GameManager(easyGame, pictograms)
 
         val answer = "Ho"
 
@@ -25,8 +25,8 @@ class GameManagerTest {
     }
 
     @Test fun testEvaluateAnswerInEasyGameAndIncorrectAnswer() {
-        val cards = listOf(Card(1, "Hola", 1, easyGame))
-        val gameManager = GameManager(easyGame, cards)
+        val pictograms = listOf(Pictogram(1, "Hola", 1, easyGame))
+        val gameManager = GameManager(easyGame, pictograms)
 
         val answer = "ob"
 
@@ -37,8 +37,8 @@ class GameManagerTest {
 
     @Test
     fun testEvaluateAnswerInMediumGameAndCorrectAnswer() {
-        val cards = listOf(Card(1, "Hola mundo", 1, mediumGame))
-        val gameManager = GameManager(mediumGame, cards)
+        val pictograms = listOf(Pictogram(1, "Hola mundo", 1, mediumGame))
+        val gameManager = GameManager(mediumGame, pictograms)
 
         val answer = "oda mudo"
 
@@ -49,8 +49,8 @@ class GameManagerTest {
 
     @Test
     fun testEvaluateAnswerInMediumGameAndIncorrectAnswer() {
-        val cards = listOf(Card(1, "Hola mundo", 1, mediumGame))
-        val gameManager = GameManager(mediumGame, cards)
+        val pictograms = listOf(Pictogram(1, "Hola mundo", 1, mediumGame))
+        val gameManager = GameManager(mediumGame, pictograms)
 
         val answer = "oda"
 
@@ -62,8 +62,8 @@ class GameManagerTest {
 
     @Test
     fun testEvaluateAnswerInHardGameAndCorrectAnswer() {
-        val cards = listOf(Card(1, "Hola", 1, hardGame))
-        val gameManager = GameManager(hardGame, cards)
+        val pictograms = listOf(Pictogram(1, "Hola", 1, hardGame))
+        val gameManager = GameManager(hardGame, pictograms)
 
         val answer = "hola"
 
@@ -73,8 +73,8 @@ class GameManagerTest {
     }
     @Test
     fun testEvaluateAnswerInHardGameAndIncorrectAnswer() {
-        val cards = listOf(Card(1, "Hola", 1, hardGame))
-        val gameManager = GameManager(hardGame, cards)
+        val pictograms = listOf(Pictogram(1, "Hola", 1, hardGame))
+        val gameManager = GameManager(hardGame, pictograms)
 
         val answer = "ola"
 

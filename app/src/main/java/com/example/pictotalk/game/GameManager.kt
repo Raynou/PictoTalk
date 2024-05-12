@@ -1,6 +1,6 @@
 package com.example.pictotalk.game
 
-import com.example.pictotalk.entities.Card
+import com.example.pictotalk.entities.Pictogram
 
 /***
  * Class that manages the game logic
@@ -11,24 +11,24 @@ import com.example.pictotalk.entities.Card
  * @constructor
  * @param context
  */
-class GameManager (var difficulty: Difficulty, cards: List<Card>, var score: Int = 0) {
+class GameManager (var difficulty: Difficulty, pictograms: List<Pictogram>, var score: Int = 0) {
 
-    private val activeCards: List<Card> = cards.filter { it.difficulty == difficulty }.shuffled()
+    private val activePictograms: List<Pictogram> = pictograms.filter { it.difficulty == difficulty }.shuffled()
     private var currentCardIndex = 0
 
     fun getTotalcards(): Int {
-        return activeCards.size
+        return activePictograms.size
     }
 
     // Get the current card and increase the index
-    fun getCurrentCard(): Card {
-        val card = activeCards[currentCardIndex]
+    fun getCurrentCard(): Pictogram {
+        val card = activePictograms[currentCardIndex]
         currentCardIndex++
         return card
     }
 
     fun evaluateAnswer(answer: String) {
-        val card = activeCards[currentCardIndex]
+        val card = activePictograms[currentCardIndex]
         if(isCorrectAnswer(card, answer)) {
             // Increase the score
             score++
@@ -36,18 +36,18 @@ class GameManager (var difficulty: Difficulty, cards: List<Card>, var score: Int
     }
 
     // Function to check if the answer is correct
-    private fun isCorrectAnswer(card: Card, answer: String): Boolean {
+    private fun isCorrectAnswer(pictogram: Pictogram, answer: String): Boolean {
         return when(difficulty) {
             Difficulty.EASY -> {
                 // The answer should be almost 30% like the phrase
-                comparePhrases(card.phrase, answer, 0.30f)
+                comparePhrases(pictogram.phrase, answer, 0.30f)
             }
             Difficulty.MEDIUM -> {
                 // The answer should be almost 40% like the phrase
-                comparePhrases(card.phrase, answer, 0.40f)
+                comparePhrases(pictogram.phrase, answer, 0.40f)
             }
             else -> {
-                card.phrase.lowercase() == answer.lowercase()
+                pictogram.phrase.lowercase() == answer.lowercase()
             }
         }
     }

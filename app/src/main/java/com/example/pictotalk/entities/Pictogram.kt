@@ -8,7 +8,7 @@ import com.example.pictotalk.game.Difficulty
  * @property phrase
  * @property image
  */
-class Card(
+class Pictogram(
     var id: Int,
     var phrase: String,
     var image: Int,

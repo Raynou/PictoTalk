@@ -12,4 +12,7 @@ class Deck(
     var name: String,
     var description: String,
     var image: Int,
-)
+) {
+    // void constructor
+    constructor() : this(0, "", "", 0)
+}
