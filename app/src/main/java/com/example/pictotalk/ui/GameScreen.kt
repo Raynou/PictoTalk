@@ -1,6 +1,12 @@
 package com.example.pictotalk.ui
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.speech.RecognizerIntent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,12 +32,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import com.example.pictotalk.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.util.Locale
+import android.Manifest
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun GameScreen() {
     val context = LocalContext.current
@@ -41,6 +57,25 @@ fun GameScreen() {
     val settingsManager = SettingsManager(context)
     val difficulty = settingsManager.getDifficulty()
     val gameManager = GameManager(difficulty, cards)
+    var text by remember {
+        mutableStateOf("")
+    }
+
+    var isRecording by remember { mutableStateOf(false) }
+    val activityResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val res =
+                    result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.get(0)
+                        ?: ""
+                text = res
+            }
+            isRecording = false
+        }
+    )
+
+    val speechPermissionState = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
 
     // Status variables
     val progressStatus by gameManager.getProgress()
@@ -93,6 +128,14 @@ fun GameScreen() {
 
             FloatingActionButton(
                 onClick = {
+                    if (!isRecording) {
+                        if (speechPermissionState.status.isGranted) {
+                            speechRecognition(activityResultLauncher)
+                            isRecording = true
+                        } else {
+                            speechPermissionState.launchPermissionRequest()
+                        }
+                    }
                     gameManager.nextCard()
                 },
                 modifier = Modifier
@@ -107,6 +150,20 @@ fun GameScreen() {
 fun getCards(deck: Deck, context: Context): List<Pictogram> {
     val cardDAO = PictogramDAO(context)
     return cardDAO.getCardsByDeckId(deck.id)
+}
+
+fun speechRecognition(
+    activityResultLauncher: ActivityResultLauncher<Intent>
+) {
+    val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+        putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        putExtra(RecognizerIntent.EXTRA_PROMPT, "Di algo")
+    }
+    activityResultLauncher.launch(intent)
 }
 
 @Preview(showBackground = true)
