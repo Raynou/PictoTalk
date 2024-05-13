@@ -53,6 +53,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
+/**
+ * Game screen
+ * This is a mess, be careful
+ */
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
@@ -215,6 +219,7 @@ fun GameScreen(
 
     LaunchedEffect(true) {
         stateManager.gameManager = null
+        voiceOutputManager.destroy()
     }
 }
 
