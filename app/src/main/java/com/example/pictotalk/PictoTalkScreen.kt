@@ -36,6 +36,7 @@ import com.example.pictotalk.game.Difficulty
 import com.example.pictotalk.game.SettingsManager
 import com.example.pictotalk.ui.GameScreen
 import com.example.pictotalk.ui.MainMenuScreen
+import kotlinx.coroutines.delay
 
 enum class PictoTalkScreen(@StringRes val title: Int? = null) {
     Start(title = R.string.app_name),
@@ -46,6 +47,7 @@ enum class PictoTalkScreen(@StringRes val title: Int? = null) {
 @Composable
 fun PictoTalkTopAppBar(settingsManager: SettingsManager) {
     val showDialog = remember { mutableStateOf(false) }
+    val stateManager = StateManager.getInstance()
     TopAppBar(
         title = { Text("PictoTalk") },
         actions = {
@@ -134,6 +136,7 @@ fun PictoTalkApp(
     val currentScreen = PictoTalkScreen.valueOf(
         backStateEntry?.destination?.route ?: PictoTalkScreen.Start.name
     )
+    val stateManager = StateManager.getInstance()
     Scaffold {  innerPadding ->
         NavHost(
             navController = navController,
@@ -151,7 +154,11 @@ fun PictoTalkApp(
                 )
             }
             composable(PictoTalkScreen.Game.name) {
-                GameScreen()
+                GameScreen(
+                    navigateUp = {
+                        navController.navigateUp()
+                    }
+                )
             }
         }
     }

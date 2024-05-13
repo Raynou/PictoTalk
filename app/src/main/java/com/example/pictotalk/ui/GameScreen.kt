@@ -23,7 +23,6 @@ import com.example.pictotalk.game.SettingsManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,20 +42,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Locale
 import android.Manifest
+import android.speech.tts.Voice
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.LaunchedEffect
+import com.example.pictotalk.game.VoiceOutputManager
+import com.example.pictotalk.ui.components.ConfirmationDialog
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun GameScreen() {
+fun GameScreen(
+    navigateUp: () -> Unit = {}
+) {
     val context = LocalContext.current
     val stateManager = StateManager.getInstance()
     val deck = stateManager.deck
     val cards = getCards(deck, context)
     val settingsManager = SettingsManager(context)
     val difficulty = settingsManager.getDifficulty()
-    val gameManager = GameManager(difficulty, cards)
+    val gameManager = stateManager.gameManager ?: GameManager(difficulty, cards)
+    val voiceOutputManager = VoiceOutputManager()
+    voiceOutputManager.init(context)
+    if(stateManager.gameManager == null) {
+        stateManager.gameManager = gameManager
+    }
+
+    var showFeedback by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var isAnswerCorrect by remember { mutableStateOf(false) }
+    var showEndGameScreen by remember { mutableStateOf(false) }
+
     var text by remember {
         mutableStateOf("")
     }
@@ -69,9 +88,19 @@ fun GameScreen() {
                 val res =
                     result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.get(0)
                         ?: ""
+                val oldScore = gameManager.score
                 text = res
+                gameManager.evaluateAnswer(res)
+                isAnswerCorrect = oldScore < gameManager.score
+                showFeedback = true
             }
             isRecording = false
+            if(gameManager.isEndGame()) {
+                showEndGameScreen = true
+            } else {
+                gameManager.nextCard()
+            }
+
         }
     )
 
@@ -89,12 +118,14 @@ fun GameScreen() {
             Row (
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    showDialog = true
+                }) {
                     Icon(Icons.Filled.Close, contentDescription = "Close")
                 }
 
 
-                // Simulate game progress
+                // Game progress
                 LinearProgressIndicator(
                     progress = progressStatus,
                     modifier = Modifier
@@ -117,10 +148,13 @@ fun GameScreen() {
                         .padding(16.dp),
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 4.dp
-                    )
+                    ),
+                    onClick = {
+                        voiceOutputManager.speak(currentCard.phrase)
+                    }
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Image(painter = painterResource(id = R.drawable.cards), contentDescription = "Pictogram Image") // replace with actual image
+                        Image(painter = painterResource(id = R.drawable.cards), contentDescription = "Pictogram Image")
                     }
                 }
 
@@ -136,14 +170,51 @@ fun GameScreen() {
                             speechPermissionState.launchPermissionRequest()
                         }
                     }
-                    gameManager.nextCard()
                 },
                 modifier = Modifier
                             .size(72.dp)
             ) {
-                Icon(Icons.Filled.Build, contentDescription = "Speak")
+                Icon(Icons.Filled.Mic, contentDescription = "Speak")
             }
         }
+    }
+
+    if(showFeedback) {
+        FullScreenFeedback(isAnswerCorrect) {
+            showFeedback = false
+        }
+    }
+
+    if(showDialog) {
+        ConfirmationDialog(
+            title = "¿Estás seguro que deseas salir?",
+            onConfirm = {
+                showDialog = false
+                navigateUp()
+            },
+            onDismiss = { showDialog = false },
+            content = {
+                Text("Si sales perderás tu progreso")
+            }
+        )
+    }
+
+    if(showEndGameScreen) {
+        EndGameScreen(
+            totalCards = gameManager.getTotalCards(),
+            score = gameManager.score,
+            onBackToMenu = {
+                navigateUp()
+            }
+        )
+    }
+
+    BackHandler {
+        showDialog = true
+    }
+
+    LaunchedEffect(true) {
+        stateManager.gameManager = null
     }
 }
 

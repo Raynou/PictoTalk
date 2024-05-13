@@ -19,15 +19,20 @@ class GameManager (
     pictograms: List<Pictogram>,
     var score: Int = 0,
 ) {
-    private val activePictograms: List<Pictogram> = pictograms.filter { it.difficulty == difficulty }.shuffled()
-    private var currentCardIndex = 0
+    val activePictograms: List<Pictogram> = pictograms.filter { it.difficulty == difficulty }.shuffled()
+    var currentCardIndex = 0
     private var currentCard: MutableState<Pictogram> = mutableStateOf(activePictograms[currentCardIndex])
     private var progress: MutableState<Float> = mutableStateOf(0.0f)
+
+    fun isEndGame(): Boolean {
+        return currentCardIndex == activePictograms.size - 1
+    }
+
     fun getCurrentCard(): State<Pictogram> {
         return this.currentCard
     }
 
-    fun getTotalcards(): Int {
+    fun getTotalCards(): Int {
         return activePictograms.size
     }
 
@@ -36,14 +41,17 @@ class GameManager (
     }
 
     private fun updateProgress() {
-        progress.value = (currentCardIndex.toFloat() + 1) / activePictograms.size.toFloat()
+        progress.value = currentCardIndex.toFloat() / activePictograms.size.toFloat()
     }
 
     // Function to update the state of the game
     fun nextCard() {
+        if(isEndGame()) {
+            return
+        }
         currentCardIndex++
-        currentCard.value = activePictograms[currentCardIndex]
         updateProgress()
+        currentCard.value = activePictograms[currentCardIndex]
     }
 
     fun evaluateAnswer(answer: String) {

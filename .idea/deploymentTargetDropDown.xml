@@ -2,22 +2,19 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="MainActivity">
+      <entry key="PreviewEndGameScreen">
+        <State />
+      </entry>
+      <entry key="PreviewFullScreenFeedback">
         <State />
       </entry>
       <entry key="app">
         <State />
       </entry>
-      <entry key="testEvaluateAnswerInHardGameAndCorrectAnswer()">
-        <State />
-      </entry>
-      <entry key="testEvaluateAnswerInHardGameAndIncorrectAnswer()">
+      <entry key="testEvaluateAnswerInEasyGameAndIncorrectAnswer()">
         <State />
       </entry>
       <entry key="testEvaluateAnswerInMediumGameAndCorrectAnswer()">
-        <State />
-      </entry>
-      <entry key="testEvaluateAnswerInMediumGameAndIncorrectAnswer()">
         <State />
       </entry>
     </value>

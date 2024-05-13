@@ -1,9 +1,11 @@
 package com.example.pictotalk
 
 import com.example.pictotalk.entities.Deck
+import com.example.pictotalk.game.GameManager
 
 class StateManager private constructor (
-    var deck: Deck = Deck()
+    var deck: Deck = Deck(),
+    var gameManager: GameManager? = null
 ) {
     companion object {
         private var instance: StateManager? = null
