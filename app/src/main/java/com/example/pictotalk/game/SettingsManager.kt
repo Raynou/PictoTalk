@@ -3,6 +3,10 @@ package com.example.pictotalk.game
 import android.content.Context
 import android.content.SharedPreferences
 
+/**
+ * Singleton class that stores values that are intended to be used in various parts of the app.
+ * @property context
+ */
 class SettingsManager(private val context: Context) {
     companion object {
         private const val PREFS_NAME = "pictotalk"

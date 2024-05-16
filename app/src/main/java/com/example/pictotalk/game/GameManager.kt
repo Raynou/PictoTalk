@@ -19,8 +19,8 @@ class GameManager (
     pictograms: List<Pictogram>,
     var score: Int = 0,
 ) {
-    val activePictograms: List<Pictogram> = pictograms.filter { it.difficulty == difficulty }.shuffled()
-    var currentCardIndex = 0
+    private val activePictograms: List<Pictogram> = pictograms.filter { it.difficulty == difficulty }.shuffled()
+    private var currentCardIndex = 0
     private var currentCard: MutableState<Pictogram> = mutableStateOf(activePictograms[currentCardIndex])
     private var progress: MutableState<Float> = mutableStateOf(0.0f)
 

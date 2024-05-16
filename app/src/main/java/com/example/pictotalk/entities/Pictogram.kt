@@ -3,12 +3,12 @@ package com.example.pictotalk.entities
 import com.example.pictotalk.game.Difficulty
 
 /**
- * Entity that represents a card
+ * Entity that represents a pictogram
  * @property id
  * @property phrase
  * @property image
  */
-class Pictogram(
+data class Pictogram(
     var id: Int,
     var phrase: String,
     var image: Int,

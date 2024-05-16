@@ -46,7 +46,7 @@ class PictogramDAO (context: Context){
     }
 
     // Function that retrieves all the cards from the database
-    fun getAllCards(): List<Pictogram> {
+    fun getAllPictograms(): List<Pictogram> {
         val pictograms = mutableListOf<Pictogram>()
         val cursor = sqliteDatabase.query(TABLE_CARD, null, null, null, null, null, null)
         with(cursor) {

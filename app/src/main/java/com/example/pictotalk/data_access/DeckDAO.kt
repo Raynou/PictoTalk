@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.example.pictotalk.data_access.BdOpenHelper.Companion.TABLE_CARD_DECK
 import com.example.pictotalk.data_access.BdOpenHelper.Companion.TABLE_DECK
 import com.example.pictotalk.entities.Deck
+import com.example.pictotalk.entities.Pictogram
 
 /**
  * Data Access Object for the Deck entity
@@ -40,7 +41,7 @@ class DeckDAO(context: Context) {
     fun insertDeck(deck: Deck): Long {
         val values = ContentValues().apply {
             put("name", deck.name)
-            put("description", deck.description)
+            //put("description", deck.description)
             put("image", deck.image)
         }
         return sqliteDatabase.insert(TABLE_DECK, null, values)
@@ -91,5 +92,21 @@ class DeckDAO(context: Context) {
             }
         }
         return decks
+    }
+
+    // Function that associates a list of cards to a deck
+    fun associateCards(deckId: Int, cards: List<Pictogram>) {
+        cards.forEach { card ->
+            val values = ContentValues().apply {
+                put("card_id", card.id)
+                put("deck_id", deckId)
+            }
+            sqliteDatabase.insert(TABLE_CARD_DECK, null, values)
+        }
+    }
+
+    // Function for reset the associated cards of a deck
+    fun resetAssociatedCards(deckId: Int) {
+        sqliteDatabase.delete(TABLE_CARD_DECK, "deck_id = ?", arrayOf(deckId.toString()))
     }
 }

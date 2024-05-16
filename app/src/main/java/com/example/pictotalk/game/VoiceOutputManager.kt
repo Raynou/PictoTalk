@@ -4,6 +4,9 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import java.util.Locale
 
+/**
+ * Class that manages the voice output of the app
+ */
 class VoiceOutputManager{
     private lateinit var textToSpeech: TextToSpeech
 

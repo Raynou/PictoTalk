@@ -61,7 +61,8 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
                     "card_id INTEGER," +
                     "deck_id INTEGER," +
                     "FOREIGN KEY(card_id) REFERENCES $TABLE_CARD(id)," +
-                    "FOREIGN KEY(deck_id) REFERENCES $TABLE_DECK(id))"
+                    "FOREIGN KEY(deck_id) REFERENCES $TABLE_DECK(id)," +
+                    "PRIMARY KEY(card_id, deck_id))"
         )
         val image = R.drawable.cards
         db.execSQL("INSERT INTO $TABLE_DECK (name, description, image) VALUES ('Cotidianidad', 'Mazo con pictogramas relacionados con el día a día', $image)")

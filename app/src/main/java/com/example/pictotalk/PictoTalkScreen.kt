@@ -1,5 +1,6 @@
 package com.example.pictotalk
 
+import CardsListScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -36,11 +39,13 @@ import com.example.pictotalk.game.Difficulty
 import com.example.pictotalk.game.SettingsManager
 import com.example.pictotalk.ui.GameScreen
 import com.example.pictotalk.ui.MainMenuScreen
-import kotlinx.coroutines.delay
+import com.example.pictotalk.ui.NewDeckScreen
 
 enum class PictoTalkScreen(@StringRes val title: Int? = null) {
     Start(title = R.string.app_name),
-    Game
+    Game,
+    NewDeck(title = R.string.new_deck),
+    CardsList(title = R.string.card_list)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,13 +53,16 @@ enum class PictoTalkScreen(@StringRes val title: Int? = null) {
 fun PictoTalkTopAppBar(settingsManager: SettingsManager) {
     val showDialog = remember { mutableStateOf(false) }
     val stateManager = StateManager.getInstance()
+    val backGroundColor = Color(0xFFFEF7FF)
     TopAppBar(
         title = { Text("PictoTalk") },
         actions = {
             IconButton(onClick = { showDialog.value = true }) {
                 Icon(Icons.Filled.Settings, contentDescription = "Settings")
             }
-        }
+        },
+        // Add background color
+        colors = topAppBarColors(containerColor = backGroundColor)
     )
 
     if (showDialog.value) {
@@ -150,6 +158,11 @@ fun PictoTalkApp(
                     topAppBar = { PictoTalkTopAppBar(SettingsManager(LocalContext.current)) },
                     onDeckClicked = {
                         navController.navigate(PictoTalkScreen.Game.name)
+                    },
+                    onFABClicked = {
+                        navController.navigate(
+                            PictoTalkScreen.NewDeck.name,
+                        )
                     }
                 )
             }
@@ -157,6 +170,33 @@ fun PictoTalkApp(
                 GameScreen(
                     navigateUp = {
                         navController.navigateUp()
+                    }
+                )
+            }
+            composable(
+                PictoTalkScreen.NewDeck.name
+            ) {
+                NewDeckScreen(
+                    topAppBar = {
+                        PictoTalkTopAppBar(SettingsManager(LocalContext.current))
+                    },
+                    onDeckClicked = {
+                        navController.navigate(PictoTalkScreen.CardsList.name)
+                    },
+                    navigateUp = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable(
+                PictoTalkScreen.CardsList.name
+            ) {
+                CardsListScreen(
+                    topAppBar = {
+                        PictoTalkTopAppBar(SettingsManager(LocalContext.current))
+                    },
+                    navigateUp = {
+                        navController.popBackStack()
                     }
                 )
             }

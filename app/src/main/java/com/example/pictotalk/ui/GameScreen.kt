@@ -54,7 +54,8 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
 /**
- * Game screen
+ * Game screen.
+ *
  * This is a mess, be careful
  */
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -97,15 +98,15 @@ fun GameScreen(
                 gameManager.evaluateAnswer(res)
                 isAnswerCorrect = oldScore < gameManager.score
                 showFeedback = true
+                if(gameManager.isEndGame()) {
+                    showEndGameScreen = true
+                } else {
+                    gameManager.nextCard()
+                }
+
             }
             isRecording = false
-            if(gameManager.isEndGame()) {
-                showEndGameScreen = true
-            } else {
-                gameManager.nextCard()
-            }
-
-        }
+        },
     )
 
     val speechPermissionState = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
@@ -134,7 +135,7 @@ fun GameScreen(
                     progress = progressStatus,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(16.dp),
                 )
             }
 
@@ -154,11 +155,18 @@ fun GameScreen(
                         defaultElevation = 4.dp
                     ),
                     onClick = {
-                        voiceOutputManager.speak(currentCard.phrase)
+                        if(!showEndGameScreen){
+                            voiceOutputManager.speak(currentCard.phrase)
+                        }
                     }
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Image(painter = painterResource(id = R.drawable.cards), contentDescription = "Pictogram Image")
+                        Image(
+                            painter = painterResource(id = R.drawable.cards),
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentDescription = "Pictogram Image"
+                        )
                     }
                 }
 
@@ -176,9 +184,14 @@ fun GameScreen(
                     }
                 },
                 modifier = Modifier
-                            .size(72.dp)
+                            .size(96.dp)
             ) {
-                Icon(Icons.Filled.Mic, contentDescription = "Speak")
+                Icon(
+                    Icons.Filled.Mic,
+                    contentDescription = "Speak",
+                    modifier = Modifier
+                        .size(24.dp)
+                )
             }
         }
     }
@@ -225,7 +238,7 @@ fun GameScreen(
 
 fun getCards(deck: Deck, context: Context): List<Pictogram> {
     val cardDAO = PictogramDAO(context)
-    return cardDAO.getCardsByDeckId(deck.id)
+    return cardDAO.getCardsByDeckId(deck.id!!)
 }
 
 fun speechRecognition(

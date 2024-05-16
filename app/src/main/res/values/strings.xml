@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PictoTalk</string>
+    <string name="new_deck">Nuevo Mazo</string>
+    <string name="card_list">Selección de cartas</string>
 </resources>

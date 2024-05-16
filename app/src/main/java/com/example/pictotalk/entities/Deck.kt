@@ -7,10 +7,10 @@ package com.example.pictotalk.entities
  * @property description
  * @property image
  */
-class Deck(
-    var id: Int,
+data class Deck(
+    var id: Int? = null,
     var name: String,
-    var description: String,
+    var description: String? = null,
     var image: Int,
 ) {
     // void constructor

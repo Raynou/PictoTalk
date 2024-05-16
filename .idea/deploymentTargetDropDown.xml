@@ -2,6 +2,12 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="CardsListDefaultPreview">
+        <State />
+      </entry>
+      <entry key="NewDeckDefaultPreview">
+        <State />
+      </entry>
       <entry key="PreviewEndGameScreen">
         <State />
       </entry>
@@ -12,9 +18,6 @@
         <State />
       </entry>
       <entry key="testEvaluateAnswerInEasyGameAndIncorrectAnswer()">
-        <State />
-      </entry>
-      <entry key="testEvaluateAnswerInMediumGameAndCorrectAnswer()">
         <State />
       </entry>
     </value>
