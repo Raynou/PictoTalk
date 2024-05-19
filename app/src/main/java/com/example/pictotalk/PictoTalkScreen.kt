@@ -2,44 +2,26 @@ package com.example.pictotalk
 
 import CardsListScreen
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.pictotalk.game.Difficulty
 import com.example.pictotalk.game.SettingsManager
 import com.example.pictotalk.ui.GameScreen
 import com.example.pictotalk.ui.MainMenuScreen
 import com.example.pictotalk.ui.NewDeckScreen
+import com.example.pictotalk.ui.components.PictoTalkTopAppBar
+import kotlinx.coroutines.delay
 
 enum class PictoTalkScreen(@StringRes val title: Int? = null) {
     Start(title = R.string.app_name),
@@ -48,94 +30,7 @@ enum class PictoTalkScreen(@StringRes val title: Int? = null) {
     CardsList(title = R.string.card_list)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PictoTalkTopAppBar(settingsManager: SettingsManager) {
-    val showDialog = remember { mutableStateOf(false) }
-    val stateManager = StateManager.getInstance()
-    val backGroundColor = Color(0xFFFEF7FF)
-    TopAppBar(
-        title = { Text("PictoTalk") },
-        actions = {
-            IconButton(onClick = { showDialog.value = true }) {
-                Icon(Icons.Filled.Settings, contentDescription = "Settings")
-            }
-        },
-        // Add background color
-        colors = topAppBarColors(containerColor = backGroundColor)
-    )
-
-    if (showDialog.value) {
-        val radioGroupState = rememberSaveable { mutableStateOf(settingsManager.getDifficulty()) }
-        AlertDialog(
-            onDismissRequest = { showDialog.value = false },
-            title = { Text("Dificultad") },
-            text = {
-                Column {
-                    Text("Fácil: para niños de 2 a 5 años")
-                    Text("Medio: para niños de 5 a 7 años")
-                    Text("Difícil: 9 años en adelante")
-
-                    // Espacio en blanco
-                    Text("\n")
-
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Text("Fácil")
-                        RadioButton(
-                            selected = radioGroupState.value == Difficulty.EASY,
-                            onClick = { radioGroupState.value = Difficulty.EASY }
-                        )
-                    }
-
-                    Divider()
-
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Text("Medio")
-                        RadioButton(
-                            selected = radioGroupState.value == Difficulty.MEDIUM,
-                            onClick = { radioGroupState.value = Difficulty.MEDIUM }
-                        )
-                    }
-
-                    Divider()
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Text("Difícil")
-                        RadioButton(
-                            selected = radioGroupState.value == Difficulty.HARD,
-                            onClick = { radioGroupState.value = Difficulty.HARD }
-                        )
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    settingsManager.setDifficulty(radioGroupState.value)
-                    showDialog.value = false
-                }) {
-                    Text("Aceptar")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDialog.value = false }) {
-                    Text("Cancelar")
-                }
-            }
-        )
-    }
-}
-
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PictoTalkApp(
     navController: NavHostController = rememberNavController()
@@ -145,6 +40,8 @@ fun PictoTalkApp(
         backStateEntry?.destination?.route ?: PictoTalkScreen.Start.name
     )
     val stateManager = StateManager.getInstance()
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Scaffold {  innerPadding ->
         NavHost(
             navController = navController,
@@ -155,7 +52,14 @@ fun PictoTalkApp(
         ) {
             composable(PictoTalkScreen.Start.name) {
                 MainMenuScreen(
-                    topAppBar = { PictoTalkTopAppBar(SettingsManager(LocalContext.current)) },
+                    topAppBar = {
+                        PictoTalkTopAppBar(
+                            SettingsManager(LocalContext.current),
+                            canManageSettings = true,
+                            canGoBack = false,
+                            title = "PictoTalk"
+                        )
+                    },
                     onDeckClicked = {
                         navController.navigate(PictoTalkScreen.Game.name)
                     },
@@ -169,7 +73,7 @@ fun PictoTalkApp(
             composable(PictoTalkScreen.Game.name) {
                 GameScreen(
                     navigateUp = {
-                        navController.navigateUp()
+                        navController.popBackStack()
                     }
                 )
             }
@@ -178,7 +82,21 @@ fun PictoTalkApp(
             ) {
                 NewDeckScreen(
                     topAppBar = {
-                        PictoTalkTopAppBar(SettingsManager(LocalContext.current))
+                        PictoTalkTopAppBar(
+                            SettingsManager(LocalContext.current),
+                            canManageSettings = false,
+                            canGoBack = true,
+                            title = "Nuevo Mazo",
+                            onGoBack = {
+                                stateManager.newDeckName = ""
+                                stateManager.newDeckPictograms = mutableListOf()
+
+                                // Hide the keyboard
+                                keyboardController?.hide()
+
+                                navController.popBackStack()
+                            }
+                        )
                     },
                     onDeckClicked = {
                         navController.navigate(PictoTalkScreen.CardsList.name)
@@ -193,7 +111,15 @@ fun PictoTalkApp(
             ) {
                 CardsListScreen(
                     topAppBar = {
-                        PictoTalkTopAppBar(SettingsManager(LocalContext.current))
+                        PictoTalkTopAppBar(
+                            SettingsManager(LocalContext.current),
+                            canManageSettings = false,
+                            canGoBack = true,
+                            title = "Selección de cartas",
+                            onGoBack = {
+                                navController.popBackStack()
+                            }
+                        )
                     },
                     navigateUp = {
                         navController.popBackStack()
@@ -203,5 +129,7 @@ fun PictoTalkApp(
         }
     }
 }
+
+
 
 

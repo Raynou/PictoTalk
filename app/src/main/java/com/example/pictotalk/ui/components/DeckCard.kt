@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,17 +23,15 @@ import com.example.pictotalk.entities.Deck
 fun DeckCard(deck: Deck, onDeckClicked: () -> Unit = {}) {
     Card(
         modifier = Modifier
-            .width(200.dp)
-            .height(250.dp),
-        // shape = CutCornerShape(20.dp)
+            .width(180.dp)
+            .height(210.dp),
         elevation = CardDefaults.cardElevation(10.dp),
-        //border = BorderStroke(3.dp,Color.Gray)
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
         onClick = {
             onDeckClicked()
-        }
+        },
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -44,7 +43,7 @@ fun DeckCard(deck: Deck, onDeckClicked: () -> Unit = {}) {
                 painter = painterResource(id = deck.image),
                 contentDescription = deck.name
             )
-            Text(deck.name, fontSize = 16.sp)
+            Text(deck.name, fontSize = 16.sp, modifier = Modifier.padding(horizontal = 8.dp))
         }
     }
 }

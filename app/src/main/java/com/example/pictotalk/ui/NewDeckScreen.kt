@@ -1,6 +1,5 @@
 package com.example.pictotalk.ui
 
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -24,12 +23,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -48,11 +45,11 @@ fun NewDeckScreen(
     onDeckClicked: () -> Unit = {},
     navigateUp: () -> Unit = {}
 ) {
-    val textFieldState = remember { mutableStateOf("") }
     val context = LocalContext.current
     val stateManager = StateManager.getInstance()
     val deckDAO = DeckDAO(context)
-    Log.d("NewDeckScreen", "StateManager.newDeckPictograms: ${stateManager.newDeckPictograms}")
+    val textFieldState = remember { mutableStateOf(stateManager.newDeckName ?: "") }
+
     Scaffold(
         topBar = { topAppBar() }
     ) { innerPadding ->
@@ -98,12 +95,13 @@ fun NewDeckScreen(
                     .height(435.dp),
                 elevation = CardDefaults.cardElevation(4.dp),
                 onClick = {
+                    stateManager.newDeckName = textFieldState.value
                     onDeckClicked()
                 }
             ) {
                 Image(
                     painter = painterResource(R.drawable.cards),
-                    contentDescription = "YO"
+                    contentDescription = "Pictograms"
                 )
             }
 
@@ -127,7 +125,7 @@ fun NewDeckScreen(
                         ).show()
                         return@FloatingActionButton
                     }
-                    if(stateManager.newDeckPictograms.any { it.difficulty != Difficulty.EASY }) {
+                    if(stateManager.newDeckPictograms.all { it.difficulty != Difficulty.EASY }) {
                         Toast.makeText(
                             context,
                             "El mazo debe contener al menos un pictograma fácil",
@@ -135,7 +133,7 @@ fun NewDeckScreen(
                         ).show()
                         return@FloatingActionButton
                     }
-                    if(stateManager.newDeckPictograms.any { it.difficulty != Difficulty.MEDIUM }) {
+                    if(stateManager.newDeckPictograms.all { it.difficulty != Difficulty.MEDIUM }) {
                         Toast.makeText(
                             context,
                             "El mazo debe contener al menos un pictograma medio",
@@ -143,7 +141,7 @@ fun NewDeckScreen(
                         ).show()
                         return@FloatingActionButton
                     }
-                    if(stateManager.newDeckPictograms.any { it.difficulty != Difficulty.HARD }) {
+                    if(stateManager.newDeckPictograms.all { it.difficulty != Difficulty.HARD }) {
                         Toast.makeText(
                             context,
                             "El mazo debe contener al menos un pictograma difícil",
@@ -168,7 +166,13 @@ fun NewDeckScreen(
                     // Reset the cards associated with the new deck
                     deckDAO.resetAssociatedCards(newDeckID)
                     // Associate cards with the new deck
-                    deckDAO.associateCards(newDeckID, stateManager.newDeckPictograms!!)
+                    deckDAO.associateCards(newDeckID, stateManager.newDeckPictograms)
+
+                    // Clear newDeckPictograms
+                    stateManager.newDeckPictograms = mutableListOf()
+                    stateManager.newDeckName = ""
+                    // Go back to main menu
+                    navigateUp()
                 },
                 modifier = Modifier
                     .size(96.dp)
@@ -182,17 +186,15 @@ fun NewDeckScreen(
             }
         }
     }
+
     // on back pressed
     BackHandler {
         // Clear newDeckPictograms
         stateManager.newDeckPictograms = mutableListOf()
+        stateManager.newDeckName = ""
         // Go back to main menu
         navigateUp()
     }
-    // Destroy stateManager.newDeckPictograms on dismiss
-    //LaunchedEffect(key1 = true) {
-    //    stateManager.newDeckPictograms = mutableListOf()
-    //}
 }
 @Preview(showBackground = true)
 @Composable
