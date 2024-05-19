@@ -23,7 +23,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,14 +35,17 @@ import com.example.pictotalk.R
 import com.example.pictotalk.StateManager
 import com.example.pictotalk.data_access.DeckDAO
 import com.example.pictotalk.entities.Deck
+import com.example.pictotalk.game.CrudAction
 import com.example.pictotalk.game.Difficulty
+import com.example.pictotalk.game.CrudAction.EDIT;
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewDeckScreen(
     topAppBar: @Composable () -> Unit = {},
     onDeckClicked: () -> Unit = {},
-    navigateUp: () -> Unit = {}
+    navigateUp: () -> Unit = {},
+    crudAction: CrudAction = CrudAction.CREATE
 ) {
     val context = LocalContext.current
     val stateManager = StateManager.getInstance()
@@ -149,24 +151,40 @@ fun NewDeckScreen(
                         ).show()
                         return@FloatingActionButton
                     }
-                    val newDeck = Deck(
-                        name = textFieldState.value,
-                        image = R.drawable.cards
-                    )
-                    // Crate new Deck
-                    val newDeckID = deckDAO.insertDeck(newDeck).toInt()
-                    if(newDeckID == -1){
-                        Toast.makeText(
-                            context,
-                            "Error al crear el mazo",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@FloatingActionButton
+
+                    // Edit an existent Deck
+                    if(crudAction == EDIT) {
+                        val deckID = stateManager.deck.id!!
+                        val updatedDeck = Deck(
+                            id = deckID,
+                            name = textFieldState.value,
+                            image = R.drawable.cards
+                        )
+                        deckDAO.updateDeck(updatedDeck)
+                        // Reset the cards associated with the new deck
+                        deckDAO.resetAssociatedCards(deckID)
+                        // Associate cards with the new deck
+                        deckDAO.associateCards(deckID, stateManager.newDeckPictograms)
+                    }else  {
+                        val newDeck = Deck(
+                            name = textFieldState.value,
+                            image = R.drawable.cards
+                        )
+                        val newDeckID = deckDAO.insertDeck(newDeck).toInt()
+                        // Crate new Deck
+                        if(newDeckID == -1){
+                            Toast.makeText(
+                                context,
+                                "Error al crear el mazo",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@FloatingActionButton
+                        }
+                        // Reset the cards associated with the new deck
+                        deckDAO.resetAssociatedCards(newDeckID)
+                        // Associate cards with the new deck
+                        deckDAO.associateCards(newDeckID, stateManager.newDeckPictograms)
                     }
-                    // Reset the cards associated with the new deck
-                    deckDAO.resetAssociatedCards(newDeckID)
-                    // Associate cards with the new deck
-                    deckDAO.associateCards(newDeckID, stateManager.newDeckPictograms)
 
                     // Clear newDeckPictograms
                     stateManager.newDeckPictograms = mutableListOf()

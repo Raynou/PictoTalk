@@ -21,8 +21,10 @@ import com.example.pictotalk.entities.Deck
 fun DeckList(
     decks: List<Deck>,
     paddingValues: PaddingValues,
+    onLongDeckClicked: () -> Unit = {},
     onDeckClicked: () -> Unit = {}
 ) {
+    val stateManager = StateManager.getInstance()
     LazyColumn(
         contentPadding = paddingValues,
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -39,8 +41,11 @@ fun DeckList(
                         deck,
                         onDeckClicked = {
                             onDeckClicked()
-                            val vm = StateManager.getInstance()
-                            vm.deck = deck
+                            stateManager.deck = deck
+                        },
+                        onLongDeckClicked = {
+                            onLongDeckClicked()
+                            stateManager.deck = deck
                         }
                     )
                 }

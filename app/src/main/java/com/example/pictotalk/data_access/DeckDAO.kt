@@ -109,4 +109,20 @@ class DeckDAO(context: Context) {
     fun resetAssociatedCards(deckId: Int) {
         sqliteDatabase.delete(TABLE_CARD_DECK, "deck_id = ?", arrayOf(deckId.toString()))
     }
+
+    // Function for delete a deck by its id
+    fun deleteDeck(deckId: Int) {
+        sqliteDatabase.delete(TABLE_DECK, "id = ?", arrayOf(deckId.toString()))
+        // Delete all associations of this deck in TABLE_CARD_DECK as well
+        sqliteDatabase.delete(TABLE_CARD_DECK, "deck_id = ?", arrayOf(deckId.toString()))
+    }
+
+    // Function for update a deck with
+    fun updateDeck(deck: Deck) {
+        val values = ContentValues().apply {
+            put("name", deck.name)
+            put("image", deck.image)
+        }
+        sqliteDatabase.update(TABLE_DECK, values, "id = ?", arrayOf(deck.id.toString()))
+    }
 }

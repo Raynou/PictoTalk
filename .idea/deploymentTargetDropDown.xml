@@ -2,22 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="CardsListDefaultPreview">
-        <State />
-      </entry>
-      <entry key="NewDeckDefaultPreview">
-        <State />
-      </entry>
-      <entry key="PreviewEndGameScreen">
-        <State />
-      </entry>
-      <entry key="PreviewFullScreenFeedback">
+      <entry key="MainActivity">
         <State />
       </entry>
       <entry key="app">
-        <State />
-      </entry>
-      <entry key="testEvaluateAnswerInEasyGameAndIncorrectAnswer()">
         <State />
       </entry>
     </value>

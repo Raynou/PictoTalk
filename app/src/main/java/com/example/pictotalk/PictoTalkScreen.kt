@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.pictotalk.game.CrudAction
 import com.example.pictotalk.game.SettingsManager
 import com.example.pictotalk.ui.GameScreen
 import com.example.pictotalk.ui.MainMenuScreen
@@ -27,7 +28,8 @@ enum class PictoTalkScreen(@StringRes val title: Int? = null) {
     Start(title = R.string.app_name),
     Game,
     NewDeck(title = R.string.new_deck),
-    CardsList(title = R.string.card_list)
+    CardsList(title = R.string.card_list),
+    EditDeck(title = R.string.edit_deck)
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -67,6 +69,9 @@ fun PictoTalkApp(
                         navController.navigate(
                             PictoTalkScreen.NewDeck.name,
                         )
+                    },
+                    onLongDeckClicked = {
+                        navController.navigate(PictoTalkScreen.EditDeck.name)
                     }
                 )
             }
@@ -104,6 +109,36 @@ fun PictoTalkApp(
                     navigateUp = {
                         navController.popBackStack()
                     }
+                )
+            }
+            composable(
+                PictoTalkScreen.EditDeck.name
+            ) {
+                NewDeckScreen(
+                    topAppBar = {
+                        PictoTalkTopAppBar(
+                            SettingsManager(LocalContext.current),
+                            canManageSettings = false,
+                            canGoBack = true,
+                            title = "Editar Mazo",
+                            onGoBack = {
+                                stateManager.newDeckName = ""
+                                stateManager.newDeckPictograms = mutableListOf()
+
+                                // Hide the keyboard
+                                keyboardController?.hide()
+
+                                navController.popBackStack()
+                            }
+                        )
+                    },
+                    onDeckClicked = {
+                        navController.navigate(PictoTalkScreen.CardsList.name)
+                    },
+                    navigateUp = {
+                        navController.popBackStack()
+                    },
+                    crudAction = CrudAction.EDIT
                 )
             }
             composable(
