@@ -3,6 +3,7 @@ package com.example.pictotalk.ui
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -99,12 +100,18 @@ fun NewDeckScreen(
                 onClick = {
                     stateManager.newDeckName = textFieldState.value
                     onDeckClicked()
-                }
+                },
             ) {
-                Image(
-                    painter = painterResource(R.drawable.cards),
-                    contentDescription = "Pictograms"
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.add),
+                        contentDescription = "Pictograms"
+                    )
+                }
+
             }
 
             Spacer(modifier = Modifier.height(25.dp))

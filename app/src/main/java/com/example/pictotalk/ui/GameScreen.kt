@@ -162,7 +162,7 @@ fun GameScreen(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Image(
-                            painter = painterResource(id = R.drawable.cards),
+                            painter = painterResource(id = currentCard.image),
                             modifier = Modifier
                                 .fillMaxSize(),
                             contentDescription = "Pictogram Image"

@@ -115,7 +115,7 @@ fun CardsListScreen(
                         Spacer(modifier = Modifier.width(10.dp))
 
                         Image(
-                            painter = painterResource(id = R.drawable.cards),
+                            painter = painterResource(id = pictogram.image),
                             contentDescription = "Card",
                             modifier = Modifier
                                 .size(56.dp)
