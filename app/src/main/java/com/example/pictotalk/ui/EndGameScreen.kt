@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pictotalk.ui.theme.SimplyElegant
 
 @Composable
 fun EndGameScreen(
@@ -24,7 +25,7 @@ fun EndGameScreen(
     score: Int = 0,
     onBackToMenu: () -> Unit = {}
 ) {
-    val backgroundColor = Color(0xFFFEF7FF)
+    val backgroundColor = SimplyElegant
     Box(
         modifier = Modifier
             .fillMaxSize()

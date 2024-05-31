@@ -18,6 +18,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,6 +37,7 @@ import com.example.pictotalk.R
 import com.example.pictotalk.StateManager
 import com.example.pictotalk.data_access.PictogramDAO
 import com.example.pictotalk.game.Difficulty
+import com.example.pictotalk.ui.theme.CristalLake
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +64,8 @@ fun CardsListScreen(
     val filteredPictograms = remember { mutableStateListOf(*pictograms.toTypedArray()) }
 
     Scaffold(
-        topBar = { topAppBar() }
+        topBar = { topAppBar() },
+        containerColor = Color.White
     ) { innerPadding ->
         // Añadir chips para filtrar por dificultad
         Column(
@@ -134,8 +137,13 @@ fun CardsListScreen(
                                 modifier = Modifier.width(188.dp),
                                 fontSize = 18.sp
                             )
+                            val textDifficulty = when (pictogram.difficulty) {
+                                Difficulty.EASY -> "Fácil"
+                                Difficulty.MEDIUM -> "Medio"
+                                Difficulty.HARD -> "Dificil"
+                            }
                             Text(
-                                text = pictogram.difficulty.toString(),
+                                text = textDifficulty,
                                 modifier = Modifier.width(188.dp),
                                 fontSize = 10.sp,
                                 color = difficultyColor
@@ -166,14 +174,24 @@ fun ChipsFilter(
         modifier = Modifier.padding(5.dp)
     ) {
         difficulties.forEachIndexed { index, difficulty ->
+            val difficultyText = when (difficulty) {
+                Difficulty.EASY -> "Fácil"
+                Difficulty.MEDIUM -> "Medio"
+                Difficulty.HARD -> "Difícil"
+            }
             FilterChip(
                 selected = chipStates[index],
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = CristalLake,
+                    selectedLabelColor = Color.White,
+                    selectedLeadingIconColor = Color.White
+                ),
                 onClick = {
                     chipStates[index] = !chipStates[index]
                     onChipClicked()
                 },
                 label = {
-                    Text(text = difficulty.toString().lowercase())
+                    Text(text = difficultyText)
                 },
                 leadingIcon = if (chipStates[index]) {
                     {

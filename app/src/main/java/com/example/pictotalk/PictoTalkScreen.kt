@@ -22,6 +22,7 @@ import com.example.pictotalk.ui.GameScreen
 import com.example.pictotalk.ui.MainMenuScreen
 import com.example.pictotalk.ui.NewDeckScreen
 import com.example.pictotalk.ui.components.PictoTalkTopAppBar
+import com.example.pictotalk.ui.theme.PictoTalkTheme
 import kotlinx.coroutines.delay
 
 enum class PictoTalkScreen(@StringRes val title: Int? = null) {
@@ -37,129 +38,131 @@ enum class PictoTalkScreen(@StringRes val title: Int? = null) {
 fun PictoTalkApp(
     navController: NavHostController = rememberNavController()
 ) {
-    val backStateEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = PictoTalkScreen.valueOf(
-        backStateEntry?.destination?.route ?: PictoTalkScreen.Start.name
-    )
-    val stateManager = StateManager.getInstance()
-    val keyboardController = LocalSoftwareKeyboardController.current
+    PictoTalkTheme {
+        val backStateEntry by navController.currentBackStackEntryAsState()
+        val currentScreen = PictoTalkScreen.valueOf(
+            backStateEntry?.destination?.route ?: PictoTalkScreen.Start.name
+        )
+        val stateManager = StateManager.getInstance()
+        val keyboardController = LocalSoftwareKeyboardController.current
 
-    Scaffold {  innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = PictoTalkScreen.Start.name,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            composable(PictoTalkScreen.Start.name) {
-                MainMenuScreen(
-                    topAppBar = {
-                        PictoTalkTopAppBar(
-                            SettingsManager(LocalContext.current),
-                            canManageSettings = true,
-                            canGoBack = false,
-                            title = "PictoTalk"
-                        )
-                    },
-                    onDeckClicked = {
-                        navController.navigate(PictoTalkScreen.Game.name)
-                    },
-                    onFABClicked = {
-                        navController.navigate(
-                            PictoTalkScreen.NewDeck.name,
-                        )
-                    },
-                    onLongDeckClicked = {
-                        navController.navigate(PictoTalkScreen.EditDeck.name)
-                    }
-                )
-            }
-            composable(PictoTalkScreen.Game.name) {
-                GameScreen(
-                    navigateUp = {
-                        navController.popBackStack()
-                    }
-                )
-            }
-            composable(
-                PictoTalkScreen.NewDeck.name
+        Scaffold {  innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = PictoTalkScreen.Start.name,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
-                NewDeckScreen(
-                    topAppBar = {
-                        PictoTalkTopAppBar(
-                            SettingsManager(LocalContext.current),
-                            canManageSettings = false,
-                            canGoBack = true,
-                            title = "Nuevo Mazo",
-                            onGoBack = {
-                                stateManager.newDeckName = ""
-                                stateManager.newDeckPictograms = mutableListOf()
+                composable(PictoTalkScreen.Start.name) {
+                    MainMenuScreen(
+                        topAppBar = {
+                            PictoTalkTopAppBar(
+                                SettingsManager(LocalContext.current),
+                                canManageSettings = true,
+                                canGoBack = false,
+                                title = "PictoTalk"
+                            )
+                        },
+                        onDeckClicked = {
+                            navController.navigate(PictoTalkScreen.Game.name)
+                        },
+                        onFABClicked = {
+                            navController.navigate(
+                                PictoTalkScreen.NewDeck.name,
+                            )
+                        },
+                        onLongDeckClicked = {
+                            navController.navigate(PictoTalkScreen.EditDeck.name)
+                        }
+                    )
+                }
+                composable(PictoTalkScreen.Game.name) {
+                    GameScreen(
+                        navigateUp = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+                composable(
+                    PictoTalkScreen.NewDeck.name
+                ) {
+                    NewDeckScreen(
+                        topAppBar = {
+                            PictoTalkTopAppBar(
+                                SettingsManager(LocalContext.current),
+                                canManageSettings = false,
+                                canGoBack = true,
+                                title = "Nuevo Mazo",
+                                onGoBack = {
+                                    stateManager.newDeckName = ""
+                                    stateManager.newDeckPictograms = mutableListOf()
 
-                                // Hide the keyboard
-                                keyboardController?.hide()
+                                    // Hide the keyboard
+                                    keyboardController?.hide()
 
-                                navController.popBackStack()
-                            }
-                        )
-                    },
-                    onDeckClicked = {
-                        navController.navigate(PictoTalkScreen.CardsList.name)
-                    },
-                    navigateUp = {
-                        navController.popBackStack()
-                    }
-                )
-            }
-            composable(
-                PictoTalkScreen.EditDeck.name
-            ) {
-                NewDeckScreen(
-                    topAppBar = {
-                        PictoTalkTopAppBar(
-                            SettingsManager(LocalContext.current),
-                            canManageSettings = false,
-                            canGoBack = true,
-                            title = "Editar Mazo",
-                            onGoBack = {
-                                stateManager.newDeckName = ""
-                                stateManager.newDeckPictograms = mutableListOf()
+                                    navController.popBackStack()
+                                }
+                            )
+                        },
+                        onDeckClicked = {
+                            navController.navigate(PictoTalkScreen.CardsList.name)
+                        },
+                        navigateUp = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+                composable(
+                    PictoTalkScreen.EditDeck.name
+                ) {
+                    NewDeckScreen(
+                        topAppBar = {
+                            PictoTalkTopAppBar(
+                                SettingsManager(LocalContext.current),
+                                canManageSettings = false,
+                                canGoBack = true,
+                                title = "Editar Mazo",
+                                onGoBack = {
+                                    stateManager.newDeckName = ""
+                                    stateManager.newDeckPictograms = mutableListOf()
 
-                                // Hide the keyboard
-                                keyboardController?.hide()
+                                    // Hide the keyboard
+                                    keyboardController?.hide()
 
-                                navController.popBackStack()
-                            }
-                        )
-                    },
-                    onDeckClicked = {
-                        navController.navigate(PictoTalkScreen.CardsList.name)
-                    },
-                    navigateUp = {
-                        navController.popBackStack()
-                    },
-                    crudAction = CrudAction.EDIT
-                )
-            }
-            composable(
-                PictoTalkScreen.CardsList.name
-            ) {
-                CardsListScreen(
-                    topAppBar = {
-                        PictoTalkTopAppBar(
-                            SettingsManager(LocalContext.current),
-                            canManageSettings = false,
-                            canGoBack = true,
-                            title = "Selección de cartas",
-                            onGoBack = {
-                                navController.popBackStack()
-                            }
-                        )
-                    },
-                    navigateUp = {
-                        navController.popBackStack()
-                    }
-                )
+                                    navController.popBackStack()
+                                }
+                            )
+                        },
+                        onDeckClicked = {
+                            navController.navigate(PictoTalkScreen.CardsList.name)
+                        },
+                        navigateUp = {
+                            navController.popBackStack()
+                        },
+                        crudAction = CrudAction.EDIT
+                    )
+                }
+                composable(
+                    PictoTalkScreen.CardsList.name
+                ) {
+                    CardsListScreen(
+                        topAppBar = {
+                            PictoTalkTopAppBar(
+                                SettingsManager(LocalContext.current),
+                                canManageSettings = false,
+                                canGoBack = true,
+                                title = "Selección de cartas",
+                                onGoBack = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        },
+                        navigateUp = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
         }
     }

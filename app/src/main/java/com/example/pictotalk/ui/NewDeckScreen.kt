@@ -2,6 +2,7 @@ package com.example.pictotalk.ui
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,13 +23,16 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +44,8 @@ import com.example.pictotalk.entities.Deck
 import com.example.pictotalk.game.CrudAction
 import com.example.pictotalk.game.Difficulty
 import com.example.pictotalk.game.CrudAction.EDIT;
+import com.example.pictotalk.ui.theme.CristalLake
+import com.example.pictotalk.ui.theme.SimplyElegant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +61,8 @@ fun NewDeckScreen(
     val textFieldState = remember { mutableStateOf(stateManager.newDeckName ?: "") }
 
     Scaffold(
-        topBar = { topAppBar() }
+        topBar = { topAppBar() },
+        containerColor = SimplyElegant
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -87,7 +95,11 @@ fun NewDeckScreen(
                 },
                 modifier = Modifier
                     .width(313.dp)
-                    .height(56.dp)
+                    .height(56.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                )
             )
 
             Spacer(modifier = Modifier.height(36.dp))
@@ -101,6 +113,10 @@ fun NewDeckScreen(
                     stateManager.newDeckName = textFieldState.value
                     onDeckClicked()
                 },
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                border = BorderStroke(3.dp, Color.Black)
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -200,13 +216,14 @@ fun NewDeckScreen(
                     navigateUp()
                 },
                 modifier = Modifier
-                    .size(96.dp)
+                    .size(96.dp),
+                containerColor = CristalLake
             ) {
                  Icon(
-                     Icons.Filled.Check,
-                     contentDescription = "Check",
+                     Icons.Filled.Save,
+                     contentDescription = "Save",
                      modifier = Modifier
-                         .size(24.dp)
+                         .size(36.dp)
                  )
             }
         }

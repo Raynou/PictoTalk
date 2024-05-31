@@ -72,7 +72,7 @@ class BdOpenHelper private constructor(context: Context) : SQLiteOpenHelper(cont
             Triple("Vaso de agua", R.drawable.water, "HARD"),
             Triple("Ojos", R.drawable.eyes, "EASY"),
             Triple("Orejas", R.drawable.ear, "MEDIUM"),
-            Triple("Boca", R.drawable.mouth, "EASY"),
+            Triple("Boca", R.drawable.sabroso, "EASY"),
             Triple("Cachetes", R.drawable.guy, "MEDIUM"),
             Triple("Brazos", R.drawable.arm, "EASY"),
             Triple("Piernas", R.drawable.leg, "EASY"),

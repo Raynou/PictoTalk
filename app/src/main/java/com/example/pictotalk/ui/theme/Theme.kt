@@ -37,6 +37,13 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+private val MainColorsScheme = lightColorScheme(
+    primary = CristalLake,
+    secondary = Magical,
+    tertiary = MistyAqua,
+    background = SimplyElegant,
+)
+
 @Composable
 fun PictoTalkTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -44,15 +51,7 @@ fun PictoTalkTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = MainColorsScheme
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -64,7 +63,7 @@ fun PictoTalkTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = MainTypography,
         content = content
     )
 }

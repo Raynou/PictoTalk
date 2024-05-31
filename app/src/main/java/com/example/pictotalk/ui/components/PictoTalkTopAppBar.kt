@@ -14,7 +14,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import com.example.pictotalk.R
 import com.example.pictotalk.game.SettingsManager
+import com.example.pictotalk.ui.theme.CristalLake
+import com.example.pictotalk.ui.theme.Magical
+import com.example.pictotalk.ui.theme.MistyAqua
+import com.example.pictotalk.ui.theme.SimplyElegant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,13 +34,20 @@ fun PictoTalkTopAppBar(
     onGoBack: () -> Unit = {},
 ) {
     val showDialog = remember { mutableStateOf(false) }
-    val backGroundColor = Color(0xFFFEF7FF)
+    val backGroundColor = SimplyElegant
+    val font = FontFamily(
+        Font(R.font.kids, FontWeight.Light),
+    )
     TopAppBar(
-        title = { Text(title) },
+        title = { Text(title, fontFamily = font) },
         actions = {
             if(canManageSettings){
                 IconButton(onClick = { showDialog.value = true }) {
-                    Icon(Icons.Filled.Settings, contentDescription = "Settings")
+                    Icon(
+                        Icons.Filled.Settings,
+                        contentDescription = "Settings",
+                        tint = Color.Black
+                    )
                 }
             }
         },
@@ -45,6 +60,7 @@ fun PictoTalkTopAppBar(
         },
         // Add background color
         colors = TopAppBarDefaults.topAppBarColors(containerColor = backGroundColor)
+        // Add divider
     )
 
     if(canManageSettings && showDialog.value) {

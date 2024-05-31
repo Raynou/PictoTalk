@@ -20,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,7 +35,7 @@ import com.example.pictotalk.ui.components.DeckList
 import com.example.pictotalk.data_access.DeckDAO
 import com.example.pictotalk.data_access.PictogramDAO
 import com.example.pictotalk.entities.Deck
-import com.example.pictotalk.ui.components.ConfirmationDialog
+import com.example.pictotalk.ui.theme.SimplyElegant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +57,8 @@ fun MainMenuScreen(
                 onClick = onFABClicked
             )
         },
+        //containerColor = MistyAqua,
+        containerColor = SimplyElegant,
         topBar = { topAppBar() }
     ) { innerPadding ->
         DeckList(

@@ -44,11 +44,20 @@ import java.util.Locale
 import android.Manifest
 import android.speech.tts.Voice
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import com.example.pictotalk.game.VoiceOutputManager
 import com.example.pictotalk.ui.components.ConfirmationDialog
+import com.example.pictotalk.ui.theme.CristalLake
+import com.example.pictotalk.ui.theme.Magical
+import com.example.pictotalk.ui.theme.MistyAqua
+import com.example.pictotalk.ui.theme.SimplyElegant
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -115,7 +124,9 @@ fun GameScreen(
     val progressStatus by gameManager.getProgress()
     val currentCard by gameManager.getCurrentCard()
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        containerColor = SimplyElegant
+    ) { innerPadding ->
         Column (
             modifier = Modifier.padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -123,11 +134,11 @@ fun GameScreen(
             Row (
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = {
+                /*IconButton(onClick = {
                     showDialog = true
                 }) {
                     Icon(Icons.Filled.Close, contentDescription = "Close")
-                }
+                }*/
 
 
                 // Game progress
@@ -135,7 +146,11 @@ fun GameScreen(
                     progress = progressStatus,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .height(50.dp)
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(16.dp)),
+                    color = CristalLake,
+                    trackColor = Magical
                 )
             }
 
@@ -158,13 +173,20 @@ fun GameScreen(
                         if(!showEndGameScreen){
                             voiceOutputManager.speak(currentCard.phrase)
                         }
-                    }
+                    },
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    ),
+                    border = BorderStroke(3.dp, Color.Black)
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                    ) {
                         Image(
                             painter = painterResource(id = currentCard.image),
                             modifier = Modifier
-                                .fillMaxSize(),
+                                .fillMaxSize()
+                                .padding(16.dp),
                             contentDescription = "Pictogram Image"
                         )
                     }
@@ -184,13 +206,14 @@ fun GameScreen(
                     }
                 },
                 modifier = Modifier
-                            .size(96.dp)
+                            .size(96.dp),
+                containerColor = CristalLake
             ) {
                 Icon(
                     Icons.Filled.Mic,
                     contentDescription = "Speak",
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(36.dp)
                 )
             }
         }
@@ -202,16 +225,17 @@ fun GameScreen(
         }
     }
 
+    // Dead code
     if(showDialog) {
         ConfirmationDialog(
-            title = "¿Estás seguro que deseas salir?",
+            title = "¿Dejar de jugar?",
             onConfirm = {
                 showDialog = false
                 navigateUp()
             },
             onDismiss = { showDialog = false },
             content = {
-                Text("Si sales perderás tu progreso")
+                //Image(painter = painterResource(id = R.drawable.playing), contentDescription = "")
             }
         )
     }
@@ -226,9 +250,9 @@ fun GameScreen(
         )
     }
 
-    BackHandler {
+    /*BackHandler {
         showDialog = true
-    }
+    }*/
 
     LaunchedEffect(true) {
         stateManager.gameManager = null
